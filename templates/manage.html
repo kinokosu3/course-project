@@ -1,0 +1,13 @@
+{%extends 'base.html'%}
+{% block content %}
+  <ul style="list-style-type:none;text-align:center;">
+         <li style="display:inline;"><a href="{{ url_for('login') }}">宿舍分配</a></li>
+         <li style="display:inline;"><a href="{{ url_for('login') }}">学生管理</a></li>
+         <li style="display:inline;"><a href="{{ url_for('login') }}">财产管理</a></li>
+        <li style="display:inline;"><a href="{{ url_for('outin') }}">出入登记</a></li>
+        <li style="display:inline;"><a href="{{ url_for('login') }}">系统管理</a></li>
+  </ul>
+{% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+{% endblock %}

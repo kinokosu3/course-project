@@ -1,37 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <style type="text/css">
-        *{
-            margin: 0;
-            padding: 0;
-            background-color: #EAEAEA;
-        }
-        div{
-            width: 300px;
-            height: 300px;
-            /*background-color: #1E90FF;*/
-        }
-        a{
-            margin: 15px;
-        }
-        .center-in-center{
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            -webkit-transform: translate(-50%, -50%);
-            -moz-transform: translate(-50%, -50%);
-            -ms-transform: translate(-50%, -50%);
-            -o-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-        }
-    </style>
-</head>
-<body>
-    
-</body>
-</html>
+{%extends 'base.html'%}
+
+{% block content %}
+
+  <form method="post">
+        <p>
+            <label for="cargo_id">货物号</label>
+            <input name="cargo_id" id="cargo_id"  style="width:150px;" required>
+        </p>
+        <p>
+            <label for="time">时间</label>
+            <input name="time" id="time" style="width:165px;" required>
+        </p>
+        <p>
+            <label for="origin">来源</label>
+            <input name="origin" id="origin" style="width:165px;" required>
+        </p>
+            <label for="direction">去处</label>
+            <input name="direction" id="direction" style="width:165px;" required>
+        <p>
+            <label for="duty_man">负责人</label>
+            <input name="duty_man" id="duty_man" style="width:150px;"  required>
+        </p>
+        <input type="submit" value="登记">
+  </form>
+{% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+{% endblock %}

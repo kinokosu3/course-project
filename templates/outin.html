@@ -1,0 +1,12 @@
+{%extends 'base.html'%}
+
+{%block header%}
+<h1 style="text-align:center;">{% block title %}登记选项{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <ul style="list-style-type:none;text-align:center;">
+        <li style="display:inline;"><a href="{{ url_for('cargo') }}">货物登记</a></li>
+        <li style="display:inline;"><a href="{{ url_for('visit') }}">外来人员登记</a></li>
+    </ul>
+{% endblock %}

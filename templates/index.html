@@ -1,40 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>管理系统</title>
+{%extends 'base.html'%}
+
+{%block header%}
     <style type="text/css">
-        *{
-            margin: 0;
-            padding: 0;
-            background-color: #EAEAEA;
-        }
-        div{
-            width: 300px;
-            height: 300px;
-            /*background-color: #1E90FF;*/
-        }
-        a{
-            margin: 15px;
-        }
-        .center-in-center{
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            -webkit-transform: translate(-50%, -50%);
-            -moz-transform: translate(-50%, -50%);
-            -ms-transform: translate(-50%, -50%);
-            -o-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-        }
-    </style>
-</head>
-<body>
-    <div class="center-in-center">
-        <a href="url">Link text</a>
-        <a href="url">Link text</a>
-        <a href="url">Link text</a>
-    </div>
-    
-</body>
-</html>
+    div{
+        width: 700px;
+        height: 200px;
+        right: -50%;
+    }
+    .center-in-center{
+        -webkit-transform: translate(-42%, -40%);
+        -moz-transform: translate(-42%, -40%);
+        -ms-transform: translate(-42%, -40%);
+        -o-transform: translate(-42%, -40%);
+         transform: translate(-42%, -40%);
+
+    }
+</style>
+<h1>{% block title %}welcome to dormitory Manage system{% endblock %}</h1>
+{% endblock %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+{% endfor %}
+{% endblock %}
