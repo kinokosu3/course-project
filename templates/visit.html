@@ -23,6 +23,7 @@
         </form>
     {% endif %}
     {% if name =='quit-list' %}
+        <h1>来访未登记离开列表</h1>
         <ul>
             {% for tuple_im in ql %}
                 <p><li style="display:inline;"><a href="/outin/visit/{{tuple_im[0]}}">姓名:{{tuple_im[1]}} | 来访时间:{{ tuple_im[-1]}}</a></li></p>

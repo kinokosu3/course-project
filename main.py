@@ -4,6 +4,7 @@ from auth import load_logged_in, auth
 from sqlfunction.sqlcargo import cargo_re
 from sqlfunction.exists import exists
 from sqlfunction.sqlvisit import write_visit, quit_list, write_quit
+from sqlfunction.SQLapartment import apartment_write, apartment_delete,apartment_search
 import hashlib
 import functools
 
@@ -16,6 +17,8 @@ def sha(data):
     sha1.update(data.encode('utf-8'))
     ID = sha1.hexdigest()
     return ID
+
+
 
 def login_required(view):
     @functools.wraps(view)
@@ -79,7 +82,6 @@ def login(name=None):
         status = auth(username=username, password=password, status='verify')
         if status is None:
             error = 'Incorrect password'
-            print('Incorrect password')
             flash(error)
             return render_template('login.html')
         elif status is True:
@@ -116,6 +118,33 @@ def register():
 def logout():
     session.clear()
     return redirect(url_for('index'))
+
+
+@app.route('/apartment', methods=['GET', 'POST'])
+@app.route('/apartment/<name>', methods=['GET', 'POST'])
+@login_required
+def apartment(name=None):
+    if name == 'write':
+        if request.method == 'POST':
+            apartment_name = request.form['apartment_name']
+            value = request.form['value']
+            string = apartment_name+value
+            ID = sha(string)
+            if not exists(ID, 'apartment_manage', 'id'):
+                apartment_write(ID, apartment_name=apartment_name, value=value)
+            else:
+                flash('该财产已经存在')
+        return render_template('apartment.html', name=name)
+    if name == 'condition-search':
+        results = None
+        if request.method == 'POST':
+            apartment_name = request.form['apartment_name']
+            value = request.form['value']
+            results = apartment_search(apartment_name, value)
+        return render_template('apartment.html', name=name, results=results)
+    # if name == 'delete':
+
+    return render_template('apartment.html', name=None)
 
 
 @app.route('/outin')

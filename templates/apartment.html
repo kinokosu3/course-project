@@ -1,0 +1,67 @@
+{%extends 'base.html'%}
+{% block content %}
+
+    {% if name == None %}
+        <ul style="list-style-type:none;text-align:center;">
+             <li style="display:inline;"><a href="/apartment/write">新条目写入</a></li>
+             <li style="display:inline;"><a href="/apartment/condition-search">条件查询</a></li>
+             <li style="display:inline;"><a href="{{ url_for('apartment') }}">全部条目</a></li>
+        </ul>
+    {% endif %}
+    {% if name == 'write' %}
+        <form method="post" id="write">
+            <h1 style="text-align:center;">财产记录</h1>
+            <p>
+                <label for="apartment_name">名称</label>
+                <input name="apartment_name" id="apartment_name"  style="width:150px;" required>
+                <label for="value">价值</label>
+                <input name="value" id="value"  style="width:150px;" required>
+                <input type="submit" value="写入">
+            </p>
+
+        </form>
+    {% endif %}
+    {% if name == 'condition-search' %}
+        <form method="post" id="search">
+            <h1 style="text-align:center;">财产查询</h1>
+            <p>
+                <label for="apartment_name">名称</label>
+                <input name="apartment_name" id="apartment_name"  style="width:150px;" required>
+                <label for="value">价值</label>
+                <input name="value" id="value"  style="width:150px;" required>
+                <input type="submit" value="查询">
+            </p>
+        </form>
+    {% endif%}
+    {% if name == 'condition-search' and results != None %}
+        <style type="text/css">
+            table
+              {
+                border-collapse:collapse;
+              }
+
+            table, td, th
+              {
+                border:1px solid black;
+              }
+        </style>
+        </br>
+        <table>
+            <tr>
+                <th>hash编号</th>
+                <th>名称</th>
+                <th>价值</th>
+            </tr>
+            {% for result in results%}
+            <tr>
+                <td>{{ result[0] }}</td>
+                <td>{{ result[1] }}</td>
+                <td>{{ result[2] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    {% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+    {% endfor %}
+{% endblock %}

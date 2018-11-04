@@ -131,28 +131,6 @@ def property_manage():
     pass
 
 
-# 出入登记：外来人员
-def outside_man(id, name, location, visit_time, quit_time):
-
-    conn = sqlite3.connect('main.db')
-    data = (id, name, location, visit_time, quit_time)
-    cursor = conn.cursor()
-    cursor.execute('''
-        insert into visit_register values (?,?,?,?,?);
-    ''', data)
-
-
-# 货物
-def cargo(id, cargo_id, time, origin, direction, duty_man):
-    conn = sqlite3.connect('main.db')
-    data = (id, cargo_id, time, origin, direction, duty_man)
-    cursor = conn.cursor()
-    cursor.execute('''
-        insert into cargo_register values (?,?,?,?,?,?);
-    ''', data)
-    conn.commit()
-    conn.close()
-
 # 学生管理
 def student_manage():
     pass
