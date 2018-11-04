@@ -1,4 +1,53 @@
 {%extends 'base.html'%}
 {% block content %}
+    {% if name==None %}
+        <form method="post" id="visit">
+            <p>
+                <label for="id_num">身份证号</label>
+                <input name="id_num" id="id_num"  style="width:150px;" required>
+            </p>
+            <p>
+                <label for="name">名字</label>
+                <input name="name" id="name" style="width:165px;" required>
+            </p>
+            <p>
+                <label for="origin">单位</label>
+                <input name="origin" id="origin" style="width:165px;" required>
+            </p>
+                <label for="visit_time">来访时间</label>
+                <input name="visit_time" id="visit_time" style="width:165px;" required>
+            <p>
+                <input type="submit" value="登记">
+                <a href="/outin/visit/quit-list" class="button">离开登记</a>
+            </p>
+        </form>
+    {% endif %}
+    {% if name =='quit-list' %}
+        <ul>
+            {% for tuple_im in ql %}
+                <p><li style="display:inline;"><a href="/outin/visit/{{tuple_im[0]}}">姓名:{{tuple_im[1]}} | 来访时间:{{ tuple_im[-1]}}</a></li></p>
+            {% endfor %}
 
+        </ul>
+    {% endif %}
+    {% if name != None and name !='quit-list' %}
+        <form method="post" id="quit">
+            <p>
+                 <label for="quit_time">离开时间</label>
+                <input name="quit_time" id="quit_time"  style="width:150px;" required>
+
+            </p>
+            <input type="submit" value="登记">
+        </form>
+    {% endif %}
+{#    <script>#}
+{#    function appendText(){#}
+{#        $("#visit").remove();#}
+{#        var txt1="<form method=\"post\" id=\"quit\"> <p>\n" +#}
+{#            "            <label for=\"quit_time\">离开时间</label>\n" +#}
+{#            "            <input name=\"quit_time\" id=\"quit_time\"  style=\"width:150px;\" required>\n" +#}
+{#            "        </p></form>";#}
+{#        $(".center-in-center").append(txt1);#}
+{#    }#}
+{#    </script>#}
 {% endblock %}

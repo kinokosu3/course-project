@@ -8,3 +8,5 @@ def exists(data, table_name, row_name):
                          (data, )).fetchone()
     if finish is not None:
         return True
+    else:
+        return False

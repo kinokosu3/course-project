@@ -1,13 +1,21 @@
 from flask import Flask, request, session, redirect, url_for, flash, g
 from flask import render_template
 from auth import load_logged_in, auth
-from sqlfunction import sqlcargo
+from sqlfunction.sqlcargo import cargo_re
 from sqlfunction.exists import exists
+from sqlfunction.sqlvisit import write_visit, quit_list, write_quit
+import hashlib
 import functools
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'huangtingfeng'
 
+
+def sha(data):
+    sha1 = hashlib.sha1()
+    sha1.update(data.encode('utf-8'))
+    ID = sha1.hexdigest()
+    return ID
 
 def login_required(view):
     @functools.wraps(view)
@@ -116,10 +124,29 @@ def outin():
     return render_template('outin.html')
 
 
-@app.route('/outin/visit')
+@app.route('/outin/visit', methods=['GET', 'POST'])
+@app.route('/outin/visit/<name>', methods=['GET', 'POST'])
 @login_required
-def visit():
-    return render_template('visit.html')
+def visit(name=None):
+    if name == 'quit-list':
+        ql = quit_list()
+        return render_template('visit.html', ql=ql, name=name)
+    elif name is not None:
+        if request.method == 'POST':
+            quit_time = request.form['quit_time']
+            write_quit(ID=name, quit_time=quit_time)
+            return redirect((url_for('outin')))
+        return render_template('visit.html', name=name)
+    if request.method == 'POST':
+        id_num = request.form['id_num']
+        name = request.form['name']
+        origin = request.form['origin']
+        visit_time = request.form['visit_time']
+        string = id_num+name+origin+visit_time+visit_time
+        ID = sha(string)
+        if not exists(ID, table_name='visit_register', row_name='hash'):
+            write_visit(ID=ID, id_num=id_num, name=name, origin=origin, visit_time=visit_time)
+    return render_template('visit.html', name=None)
 
 
 @app.route('/outin/cargo', methods=['GET', 'POST'])
@@ -131,6 +158,11 @@ def cargo():
         origin = request.form['origin']
         direction = request.form['direction']
         duty_man = request.form['duty_man']
-        if exists(cargo_id, table_name='cargo_register', row_name='cargo_id'):
-            flash('有了')
+        string = cargo_id+time+origin+direction+duty_man
+        ID = sha(string)
+        if not exists(ID, table_name='cargo_register', row_name='ID'):
+            cargo_re(ID=ID, cargo_id=cargo_id, time=time, origin=origin, direction=direction,duty_man=duty_man)
+        else:
+            flash('已经存在该记录')
     return render_template('cargo.html')
+

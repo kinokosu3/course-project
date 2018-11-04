@@ -98,11 +98,12 @@ def create():
     # 来访登记
     cursor.execute('''
         create table visit_register(
-                              id int primary key not null,
+                              hash int primary key not null,
+                              id_num int not null,
                               name TEXT not null,
                               location TEXT,
                               visit_time TEXT not null,
-                              quit_time TEXT not null
+                              quit_time TEXT
         );
     ''')
 
