@@ -1,19 +1,35 @@
 {%extends 'base.html'%}
 {% block content %}
+    <style type="text/css">
+            table
+              {
+                border-collapse:collapse;
+              }
 
+            table, td, th
+              {
+                border:2px solid black;
+              }
+    </style>
     {% if name == None %}
         <ul style="list-style-type:none;text-align:center;">
              <li style="display:inline;"><a href="/apartment/write">新条目写入</a></li>
              <li style="display:inline;"><a href="/apartment/condition-search">条件查询</a></li>
-             <li style="display:inline;"><a href="{{ url_for('apartment') }}">全部条目</a></li>
+             <li style="display:inline;"><a href="/apartment/everything">全部条目</a></li>
         </ul>
     {% endif %}
     {% if name == 'write' %}
         <form method="post" id="write">
             <h1 style="text-align:center;">财产记录</h1>
             <p>
-                <label for="apartment_name">名称</label>
-                <input name="apartment_name" id="apartment_name"  style="width:150px;" required>
+                <label for="gender">公寓楼</label>
+                    <select name="apartment_name">
+                        {% for i in ap_list %}
+                        <option>{{ i[0] }}</option>
+                        {% endfor %}
+                    </select>
+                <label for="name">名称</label>
+                <input name="name" id="name"  style="width:150px;" required>
                 <label for="value">价值</label>
                 <input name="value" id="value"  style="width:150px;" required>
                 <input type="submit" value="写入">
@@ -25,38 +41,53 @@
         <form method="post" id="search">
             <h1 style="text-align:center;">财产查询</h1>
             <p>
-                <label for="apartment_name">名称</label>
-                <input name="apartment_name" id="apartment_name"  style="width:150px;" required>
+                <label for="gender">公寓楼</label>
+                    <select name="apartment_name">
+                        {% for i in ap_list %}
+                        <option>{{ i[0] }}</option>
+                        {% endfor %}
+                    </select>
+                <label for="name">名称</label>
+                <input name="name" id="name"  style="width:150px;" required>
                 <label for="value">价值</label>
                 <input name="value" id="value"  style="width:150px;" required>
                 <input type="submit" value="查询">
             </p>
         </form>
     {% endif%}
-    {% if name == 'condition-search' and results != None %}
-        <style type="text/css">
-            table
-              {
-                border-collapse:collapse;
-              }
-
-            table, td, th
-              {
-                border:1px solid black;
-              }
-        </style>
-        </br>
-        <table>
+    {% if name == 'everything' and results !=[] %}
+        <table style="text-align:center;">
             <tr>
-                <th>hash编号</th>
+                <th>公寓楼号</th>
                 <th>名称</th>
                 <th>价值</th>
+                <th>操作</th>
             </tr>
             {% for result in results%}
             <tr>
-                <td>{{ result[0] }}</td>
+                <td>{{ result[3] }}</td>
                 <td>{{ result[1] }}</td>
                 <td>{{ result[2] }}</td>
+                <td><a href="/apartment/delete/{{result[0]}}" class="button">删除该条目</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    {% if name == 'condition-search' and results != None and results != []%}
+        </br>
+        <table>
+            <tr>
+                <th>公寓楼号</th>
+                <th>名称</th>
+                <th>价值</th>
+                <th>操作</th>
+            </tr>
+            {% for result in results%}
+            <tr>
+                <td>{{ result[3] }}</td>
+                <td>{{ result[1] }}</td>
+                <td>{{ result[2] }}</td>
+                <td><a href="/apartment/delete/{{result[0]}}" class="button">删除该条目</a></td>
             </tr>
             {% endfor %}
         </table>

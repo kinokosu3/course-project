@@ -4,6 +4,14 @@
 
   <form method="post">
         <p>
+            <label for="gender">公寓楼</label>
+                    <select name="apartment_name">
+                        {% for i in ap_list %}
+                        <option>{{ i[0] }}</option>
+                        {% endfor %}
+                    </select>
+        </p>
+        <p>
             <label for="cargo_id">货物号</label>
             <input name="cargo_id" id="cargo_id"  style="width:150px;" required>
         </p>

@@ -5,7 +5,7 @@ def quit_list():
     conn = sqlite3.connect('main.db')
     cursor = conn.cursor()
     ql = cursor.execute('''
-        select hash,id_num,name,location,visit_time from visit_register where quit_time == 'NULL';
+        select hash,id_num,name,location,visit_time, apartment_name from visit_register where quit_time == 'NULL';
     ''').fetchall()
     conn.commit()
     conn.close()
@@ -28,12 +28,12 @@ def search(ID):
     cursor = conn.cursor()
 
 
-def write_visit(ID, id_num, name, origin, visit_time):
+def write_visit(ID, apartment_name,id_num, name, origin, visit_time):
     conn = sqlite3.connect('main.db')
-    data = (ID, id_num, name, origin, visit_time, 'NULL')
+    data = (ID,id_num, name, origin, visit_time, 'NULL', apartment_name)
     cursor = conn.cursor()
     cursor.execute('''
-            insert into visit_register values (?,?,?,?,?,?);
+            insert into visit_register values (?,?,?,?,?,?,?);
         ''', data)
     conn.commit()
     conn.close()

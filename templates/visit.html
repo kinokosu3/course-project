@@ -3,6 +3,14 @@
     {% if name==None %}
         <form method="post" id="visit">
             <p>
+                <label for="gender">公寓楼</label>
+                    <select name="apartment_name">
+                        {% for i in ap_list %}
+                        <option>{{ i[0] }}</option>
+                        {% endfor %}
+                    </select>
+            </p>
+            <p>
                 <label for="id_num">身份证号</label>
                 <input name="id_num" id="id_num"  style="width:150px;" required>
             </p>
@@ -26,7 +34,7 @@
         <h1>来访未登记离开列表</h1>
         <ul>
             {% for tuple_im in ql %}
-                <p><li style="display:inline;"><a href="/outin/visit/{{tuple_im[0]}}">姓名:{{tuple_im[1]}} | 来访时间:{{ tuple_im[-1]}}</a></li></p>
+                <p><li><a href="/outin/visit/{{tuple_im[0]}}">公寓楼: {{ tuple_im[-1]}} | 姓名:{{tuple_im[1]}} | 来访时间:{{ tuple_im[-2]}}</a></li></p>
             {% endfor %}
 
         </ul>

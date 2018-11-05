@@ -1,0 +1,80 @@
+{%extends 'base.html'%}
+
+{% block content %}
+
+{% if name == None %}
+        <ul style="list-style-type:none;text-align:center;">
+             <li style="display:inline;"><a href="/student/write">新条目写入</a></li>
+             <li style="display:inline;"><a href="/student/condition-search">条件查询</a></li>
+             <li style="display:inline;"><a href="/student/everything">全部查询</a></li>
+        </ul>
+    {% endif %}
+    {% if name == 'write' %}
+        <form method="post" id="write">
+            <h1 style="text-align:center;">学生信息写入</h1>
+            </br>
+            <p>
+                <label for="student_name">姓名</label>
+                <input name="student_name" id="student_name"  style="width:150px;" required>
+                <label for="student_num">学号</label>
+                <input name="student_num" id="student_num"  style="width:150px;" required>
+                <label for="stay_time">入住时间</label>
+                <input name="stay_time" id="stay_time"  style="width:150px;" required></p>
+                <p>
+                <label for="room_id">宿舍号</label>
+                <input name="room_id" id="room_id"  style="width:150px;" required>
+                <label for="class_num">班级</label>
+                <input name="class_num" id="class_num"  style="width:150px;" required>
+                <label for="gender">性别</label>
+                    <select name="gender">
+                        <option>男</option>
+                        <option>女</option>
+                    </select>
+                <label for="department">院系</label>
+                <select name="department">
+                    {% for i in department_name %}
+                    <option>{{ i[0] }}</option>
+                    {% endfor %}
+                </select>
+                <label for="gender">公寓楼</label>
+                    <select name="apartment_name">
+                        {% for i in ap_list %}
+                        <option>{{ i[0] }}</option>
+                        {% endfor %}
+                    </select>
+                <input type="submit" value="写入">
+            </p>
+
+        </form>
+    {% endif %}
+    {% if name == 'condition-search' %}
+        <form method="post" id="search">
+            <label for="apartment_num">公寓楼号</label>
+                <input name="apartment_num" id="apartment_num"  style="width:150px;" required>
+             <label for="student_name">学生姓名</label>
+                <input name="student_name" id="student_name"  style="width:150px;" required>
+        </form>
+    {% endif %}
+
+    {% if name == 'condition-search' and results != None and results != [] %}
+        </br>
+        <table>
+            <tr>
+                <th>hash编号</th>
+                <th>名称</th>
+                <th>价值</th>
+                <th>操作</th>
+            </tr>
+            {% for result in results%}
+            <tr>
+                <td>{{ result[0] }}</td>
+                <td>{{ result[1] }}</td>
+                <td>{{ result[2] }}</td>
+                <td><a href="/apartment/delete/{{result[0]}}" class="button">删除该条目</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+
+{% endblock %}

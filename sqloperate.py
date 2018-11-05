@@ -8,8 +8,8 @@ def create():
     cursor = conn.cursor()
     # 创建公寓
     cursor.execute('''
-                        create table apartment(apartment_id INT PRIMARY KEY NOT NULL,
-                                             apartment_name TEXT NOT NULL,
+                        create table apartment(apartment_id INT NOT NULL,
+                                             apartment_name TEXT PRIMARY KEY NOT NULL,
                                              apartment_dir  TEXT NOT NULL,
                                              floor int NOT null);
     ''')
@@ -17,19 +17,25 @@ def create():
     # 创建楼层
 
     cursor.execute('''
-            create table floor(floor_id int primary key not null,
-                               floor_num int not null,
-                               room_num int not null
+            create table floor(floor_id int not null,
+                               floor_num int primary key not null,
+                               room_num int not null,
+                               apartment_name TEXT,
+                               foreign key(apartment_name)
+                               references apartment(apartment_name)
             );
     ''')
     # 创建宿舍
     cursor.execute('''
-                create table room(id int primary key not null,
+                create table room(id int not null,
                                    room_id int primary key not null,
                                    student_count int not null,
                                    face TEXT not null,
                                    orientation text not null,
                                    floor_num int,
+                                   apartment_name TEXT,
+                                   foreign key(apartment_name)
+                                   references apartment(apartment_name)
                                    foreign key(floor_num)
                                    references floor(floor_num)
                 );
@@ -43,8 +49,11 @@ def create():
                                        room_id int,
                                        class_num int,
                                        department_name TEXT,
+                                       apartment_name TEXT,
+                                       foreign key(apartment_name)
+                                       references apartment(apartment_name)
                                        foreign key (department_name)
-                                       references department(department_num)
+                                       references department(department_name)
                                        foreign key (class_num)
                                        references class(class_num)
                                        foreign key (room_id)
@@ -82,7 +91,10 @@ def create():
                               time TEXT not null,
                               origin TEXT not null,
                               direction TEXT not null,
-                              duty_man TEXT not null
+                              duty_man TEXT not null,
+                               apartment_name TEXT,
+                               foreign key(apartment_name)
+                               references apartment(apartment_name)
         );
     ''')
     # # 公寓管理(财产)
@@ -91,7 +103,10 @@ def create():
             create table apartment_manage(
                                       id int primary key not null,
                                       name TEXT not null,
-                                      value TEXT not null
+                                      value TEXT not null,
+                                       apartment_name TEXT,
+                                       foreign key(apartment_name)
+                                       references apartment(apartment_name)
             );
     ''')
     #
@@ -103,10 +118,17 @@ def create():
                               name TEXT not null,
                               location TEXT,
                               visit_time TEXT not null,
-                              quit_time TEXT
+                              quit_time TEXT,
+                               apartment_name TEXT,
+                               foreign key(apartment_name)
+                               references apartment(apartment_name)
         );
     ''')
 
+    # 系统账号管理
+    cursor.execute('''
+        create table user(username TEXT not null, password TEXT not null);
+    ''')
     conn.commit()
     conn.close()
 
@@ -135,3 +157,5 @@ def property_manage():
 def student_manage():
     pass
 
+if __name__ == '__main__':
+    create()

@@ -2,9 +2,10 @@ from flask import Flask, request, session, redirect, url_for, flash, g
 from flask import render_template
 from auth import load_logged_in, auth
 from sqlfunction.sqlcargo import cargo_re
-from sqlfunction.exists import exists
+from sqlfunction.exists import exists, apartment_list
 from sqlfunction.sqlvisit import write_visit, quit_list, write_quit
-from sqlfunction.SQLapartment import apartment_write, apartment_delete,apartment_search
+from sqlfunction.SQLapartment import apartment_write, apartment_delete,apartment_search,apartment_everything
+from sqlfunction.SQLstudent import student_write, student_delete, student_search, department_list
 import hashlib
 import functools
 
@@ -43,19 +44,6 @@ def load_logged_in_user():
 @app.route('/')
 def index(name=None):
     return render_template('index.html', name=name)
-# @app.route('/register')
-# def register(name=None):
-#     return render_template('register.html', name=name)
-#
-# @app.route('/register/cargo')
-# def cargo(name=None):
-#     return render_template('cargo.html', name=name)
-#
-# @app.route('/register/visit')
-# def visit(name=None):
-#     return render_template('visit.html', name=name)
-# # if __name__ == '__main__':
-# #     app.run(debug=True)
 
 
 # 管理界面
@@ -119,32 +107,85 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
+# @app.route('/')
+
+
+@app.route('/student', methods=['GET', 'POST'])
+@app.route('/student/<name>', methods=['GET', 'POST'])
+@login_required
+def student(name=None):
+    ap_list = apartment_list()
+    department_name = None
+    if name == 'write':
+        department_name = department_list()
+        if request.method == 'POST':
+            student_name = request.form['student_name']
+            student_num = request.form['student_num']
+            gender = request.form['gender']
+            stay_time = request.form['stay_time']
+            room_id = request.form['room_id']
+            class_num = request.form['class_num']
+            department = request.form['department']
+            if not exists(room_id, 'room', 'room_id'):
+                flash('宿舍号出现错误')
+            if not exists(class_num, 'class', 'class_num'):
+                flash('班级出现错误')
+        return render_template('student.html', name=name, department_name=department_name, ap_list=ap_list)
+    # if name == 'condition-search':
+    #     results =
+    if name == 'everything':
+        pass
+
+    return render_template('student.html', name=None)
+
+
+
+# @app.route('')
+#
+# def information_search():
+
+
 
 @app.route('/apartment', methods=['GET', 'POST'])
 @app.route('/apartment/<name>', methods=['GET', 'POST'])
 @login_required
 def apartment(name=None):
+    ap_list = apartment_list()
     if name == 'write':
         if request.method == 'POST':
+            property_name = request.form['name']
             apartment_name = request.form['apartment_name']
             value = request.form['value']
             string = apartment_name+value
             ID = sha(string)
             if not exists(ID, 'apartment_manage', 'id'):
-                apartment_write(ID, apartment_name=apartment_name, value=value)
+                apartment_write(ID, name=property_name,apartment_name=apartment_name, value=value)
+                flash('写入OK')
+                return redirect('/apartment/write')
             else:
                 flash('该财产已经存在')
-        return render_template('apartment.html', name=name)
+        return render_template('apartment.html', name=name, ap_list=ap_list)
+    if name == 'everything':
+        results = apartment_everything()
+        return render_template('apartment.html', name=name, results=results)
     if name == 'condition-search':
         results = None
         if request.method == 'POST':
+            property_name = request.form['name']
             apartment_name = request.form['apartment_name']
             value = request.form['value']
-            results = apartment_search(apartment_name, value)
-        return render_template('apartment.html', name=name, results=results)
-    # if name == 'delete':
-
+            results = apartment_search(apartment_name=apartment_name, name=property_name, value=value)
+            if not results:
+                flash('没有合适条目')
+        return render_template('apartment.html', name=name, results=results, ap_list=ap_list)
     return render_template('apartment.html', name=None)
+
+
+@app.route('/apartment/delete/<name>')
+@login_required
+def apartment_del(name=None):
+    apartment_delete(name)
+    return redirect('/apartment/condition-search')
 
 
 @app.route('/outin')
@@ -157,6 +198,7 @@ def outin():
 @app.route('/outin/visit/<name>', methods=['GET', 'POST'])
 @login_required
 def visit(name=None):
+    ap_list = apartment_list()
     if name == 'quit-list':
         ql = quit_list()
         return render_template('visit.html', ql=ql, name=name)
@@ -167,6 +209,7 @@ def visit(name=None):
             return redirect((url_for('outin')))
         return render_template('visit.html', name=name)
     if request.method == 'POST':
+        apartment_name = request.form['apartment_name']
         id_num = request.form['id_num']
         name = request.form['name']
         origin = request.form['origin']
@@ -174,24 +217,26 @@ def visit(name=None):
         string = id_num+name+origin+visit_time+visit_time
         ID = sha(string)
         if not exists(ID, table_name='visit_register', row_name='hash'):
-            write_visit(ID=ID, id_num=id_num, name=name, origin=origin, visit_time=visit_time)
-    return render_template('visit.html', name=None)
+            write_visit(ID=ID, apartment_name=apartment_name,id_num=id_num, name=name, origin=origin, visit_time=visit_time)
+    return render_template('visit.html', name=None, ap_list=ap_list)
 
 
 @app.route('/outin/cargo', methods=['GET', 'POST'])
 @login_required
 def cargo():
+    ap_list = apartment_list()
     if request.method == 'POST':
+        apartment_name = request.form['apartment_name']
         cargo_id = request.form['cargo_id']
         time = request.form['time']
         origin = request.form['origin']
         direction = request.form['direction']
         duty_man = request.form['duty_man']
-        string = cargo_id+time+origin+direction+duty_man
+        string = apartment_name+cargo_id+time+origin+direction+duty_man
         ID = sha(string)
         if not exists(ID, table_name='cargo_register', row_name='ID'):
-            cargo_re(ID=ID, cargo_id=cargo_id, time=time, origin=origin, direction=direction,duty_man=duty_man)
+            cargo_re(ID=ID, apartment_name=apartment_name,cargo_id=cargo_id, time=time, origin=origin, direction=direction,duty_man=duty_man)
         else:
             flash('已经存在该记录')
-    return render_template('cargo.html')
+    return render_template('cargo.html', ap_list=ap_list)
 

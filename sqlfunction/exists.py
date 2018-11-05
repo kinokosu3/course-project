@@ -14,3 +14,12 @@ def exists(data, table_name, row_name):
         conn.commit()
         conn.close()
         return False
+
+
+def apartment_list():
+    conn = sqlite3.connect('main.db')
+    cursor = conn.cursor()
+    results = cursor.execute('''
+        select apartment_name from apartment
+    ''').fetchall()
+    return results
