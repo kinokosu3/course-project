@@ -1,9 +1,9 @@
 from flask import Flask, request, session, redirect, url_for, flash, g
 from flask import render_template
 from auth import load_logged_in, auth
-from sqlfunction.sqlcargo import cargo_re
+from sqlfunction.SQLcargo import cargo_re
 from sqlfunction.exists import exists, apartment_list
-from sqlfunction.sqlvisit import write_visit, quit_list, write_quit
+from sqlfunction.SQLvisit import write_visit, quit_list, write_quit
 from sqlfunction.SQLapartment import apartment_write, apartment_delete,apartment_search,apartment_everything
 from sqlfunction.SQLstudent import student_write, student_delete, student_search, department_list
 import hashlib
@@ -115,9 +115,9 @@ def logout():
 @login_required
 def student(name=None):
     ap_list = apartment_list()
-    department_name = None
+    department = None
     if name == 'write':
-        department_name = department_list()
+        de_list = department_list()
         if request.method == 'POST':
             student_name = request.form['student_name']
             student_num = request.form['student_num']
@@ -126,16 +126,28 @@ def student(name=None):
             room_id = request.form['room_id']
             class_num = request.form['class_num']
             department = request.form['department']
-            if not exists(room_id, 'room', 'room_id'):
+            apartment_name = request.form['apartment_name']
+            if exists(student_num, 'student', 'student_num'):
+                flash('该学生已经在系统中')
+            elif not exists(room_id, 'room', 'room_id'):
                 flash('宿舍号出现错误')
-            if not exists(class_num, 'class', 'class_num'):
+            elif not exists(class_num, 'class', 'class_num'):
                 flash('班级出现错误')
-        return render_template('student.html', name=name, department_name=department_name, ap_list=ap_list)
-    # if name == 'condition-search':
-    #     results =
+            else:
+                student_write(student_num=student_num, name=student_name, gender=gender, stay_time=stay_time, room_id=room_id, class_num=class_num,department_name=department, apartment_name=apartment_name)
+        return render_template('student.html', name=name, de_list=de_list, ap_list=ap_list)
+    if name == 'condition-search':
+        results = None
+        if request.method == 'POST':
+            apartment_name = request.form['apartment_name']
+            student_name = request.form['student_name']
+            student_num = request.form['student_num']
+            if not exists(student_num, table_name='student', row_name='student_num'):
+                flash('该学生不在系统内')
+            results = student_search(apartment_name=apartment_name, student_num=student_num, student_name=student_name)
+        return render_template('student.html', name=name, ap_list=ap_list, results=results)
     if name == 'everything':
         pass
-
     return render_template('student.html', name=None)
 
 

@@ -131,31 +131,3 @@ def create():
     ''')
     conn.commit()
     conn.close()
-
-
-# 查询函数
-def search():
-    pass
-
-
-# 分配寝室
-def room_allocation():
-    pass
-
-
-# 信息查询
-def information_search():
-    pass
-
-
-# 财产管理
-def property_manage():
-    pass
-
-
-# 学生管理
-def student_manage():
-    pass
-
-if __name__ == '__main__':
-    create()
