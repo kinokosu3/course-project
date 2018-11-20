@@ -6,7 +6,7 @@
          <li style="display:inline;"><a href="{{ url_for('login') }}">住宿信息查询</a></li>
          <li style="display:inline;"><a href="{{ url_for('apartment') }}">财产管理</a></li>
         <li style="display:inline;"><a href="{{ url_for('outin') }}">出入登记</a></li>
-        <li style="display:inline;"><a href="{{ url_for('login') }}">系统管理</a></li>
+        <li style="display:inline;"><a href="{{ url_for('system') }}">系统管理</a></li>
   </ul>
 {% for message in get_flashed_messages() %}
             <div class="flash">{{ message }}</div>

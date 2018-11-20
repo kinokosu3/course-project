@@ -6,6 +6,7 @@ from sqlfunction.exists import exists, apartment_list
 from sqlfunction.SQLvisit import write_visit, quit_list, write_quit
 from sqlfunction.SQLapartment import apartment_write, apartment_delete,apartment_search,apartment_everything
 from sqlfunction.SQLstudent import student_write, student_delete, student_search, department_list
+from sqlfunction.SQLsystem import system_apartment, system_apartment_write
 import hashlib
 import functools
 
@@ -107,7 +108,22 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
-# @app.route('/')
+
+# 系统
+@app.route('/system', methods=['GET', 'POST'])
+@app.route('/system/<name>', methods=['GET', 'POST'])
+@login_required
+def system(name=None):
+    if name == 'apartment':
+        results = system_apartment()
+        if request.method == 'POST':
+            apartment_name = request.form['apartment_name']
+            apartment_dir = request.form['apartment_dir']
+            floor = request.form['floor']
+            print(request.form)
+            system_apartment_write(apartment_name=apartment_name, apartment_dir=apartment_dir, floor=floor)
+        return render_template('system.html', name=name, results=results)
+    return render_template('system.html', name=name)
 
 
 @app.route('/student', methods=['GET', 'POST'])
@@ -145,6 +161,8 @@ def student(name=None):
             if not exists(student_num, table_name='student', row_name='student_num'):
                 flash('该学生不在系统内')
             results = student_search(apartment_name=apartment_name, student_num=student_num, student_name=student_name)
+            if not results:
+                flash('该公寓无该学生')
         return render_template('student.html', name=name, ap_list=ap_list, results=results)
     if name == 'everything':
         pass
