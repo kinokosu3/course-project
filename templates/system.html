@@ -21,6 +21,7 @@
         </ul>
     {% endif %}
     {% if name == 'apartment' %}
+        <h1 style="text-align:center;">公寓楼写入</h1>
         <form method="post">
             <label for="apartment_name">公寓名</label>
             <input name="apartment_name" id="apartment_name" required>
@@ -48,5 +49,121 @@
             </tr>
             {% endfor %}
         </table>
+    {% endif %}
+    {% if name == 'room' %}
+        <form method="post" id="write">
+        <p>
+        <label for="room_id">宿舍号</label>
+                <input name="room_id" id="room_id"  style="width:150px;" required>
+        <label for="student_count">入住学生数</label>
+                <input name="student_count" id="student_count"  style="width:150px;" required>
+        <label for="face">面向</label>
+                <input name="face" id="face"  style="width:150px;" required>
+        <label for="orientation">朝向</label>
+                <input name="orientation" id="orientation"  style="width:150px;" required>
+        </p>
+        <p>
+            <label for="floor_num">楼层数</label>
+                <input name="floor_num" id="floor_num"  style="width:150px;" required>
+            <label for="gender">公寓楼</label>
+                <select name="apartment_name">
+                    {% for i in ap_list %}
+                    <option>{{ i[0] }}</option>
+                    {% endfor %}
+                </select>
+            <input type="submit" value="写入">
+        </p>
+        </form>
+
+        </br>
+        <table style="text-align:center;">
+            <tr>
+                <th>宿舍id</th>
+                <th>宿舍号</th>
+                <th>入住学生数</th>
+                <th>面向</th>
+                <th>朝向</th>
+                <th>楼层数</th>
+                <th>公寓楼</th>
+            </tr>
+            {% for result in results%}
+            <tr>
+                <td>{{ result[0]}}</td>
+                <td>{{ result[1]}}</td>
+                <td>{{ result[2]}}</td>
+                <td>{{ result[3]}}</td>
+                <td>{{ result[4]}}</td>
+                <td>{{ result[5]}}</td>
+                <td>{{ result[6]}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    {% if name == 'class' %}
+        <form method="post">
+            <label for="class_num">班号</label>
+            <input name="class_num" id="class_num" required>
+            <label for="class_name">班名</label>
+            <input name="class_name" id="class_name" required>
+            <label for="profession">专业</label>
+            <input name="profession" id="profession" required>
+            <label for="grade">年级</label>
+            <select name="grade">
+                <option>大一</option>
+                <option>大二</option>
+                <option>大三</option>
+                <option>大四</option>
+            </select>
+            <label for="department">院系</label>
+                <select name="department">
+                    {% for i in de_list %}
+                    <option>{{ i[0] }}</option>
+                    {% endfor %}
+                </select>
+            <input type="submit" value="添加">
+        </form>
+
+        </br>
+        <table style="text-align:center;">
+            <tr>
+                <th>班号</th>
+                <th>班名</th>
+                <th>专业</th>
+                <th>年级</th>
+                <th>院系</th>
+            </tr>
+            {% for result in results%}
+            <tr>
+                <td>{{ result[0]}}</td>
+                <td>{{ result[1]}}</td>
+                <td>{{ result[2]}}</td>
+                <td>{{ result[3]}}</td>
+                <td>{{ result[4]}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    {% if name == 'department' %}
+        <form method="post">
+            <label for="department_name">院系名</label>
+            <input name="department_name" id="department_name" required>
+            <label for="department_leader">系主任</label>
+            <input name="department_leader" id="department_leader" required>
+            <input type="submit" value="添加">
+        </form>
+        </br>
+        <table style="text-align:center;">
+            <tr>
+                <th>院系ID</th>
+                <th>院系名</th>
+                <th>系主任</th>
+            </tr>
+            {% for result in results%}
+            <tr>
+                <td>{{ result[0]}}</td>
+                <td>{{ result[1]}}</td>
+                <td>{{ result[2]}}</td>
+            </tr>
+            {% endfor %}
     {% endif %}
 {% endblock %}

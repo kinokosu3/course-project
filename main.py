@@ -1,13 +1,14 @@
 from flask import Flask, request, session, redirect, url_for, flash, g
 from flask import render_template
 from auth import load_logged_in, auth
+from werkzeug.utils import secure_filename
 from sqlfunction.SQLcargo import cargo_re
 from sqlfunction.exists import exists, apartment_list
 from sqlfunction.SQLvisit import write_visit, quit_list, write_quit
 from sqlfunction.SQLapartment import apartment_write, apartment_delete,apartment_search,apartment_everything
 from sqlfunction.SQLstudent import student_write, student_delete, student_search, department_list
-from sqlfunction.SQLsystem import system_apartment, system_apartment_write
-import hashlib
+from sqlfunction.SQLsystem import system_everything, system_apartment_write, system_room_write,  system_class_write, system_department_write
+import hashlib, os
 import functools
 
 app = Flask(__name__)
@@ -19,7 +20,6 @@ def sha(data):
     sha1.update(data.encode('utf-8'))
     ID = sha1.hexdigest()
     return ID
-
 
 
 def login_required(view):
@@ -50,18 +50,18 @@ def index(name=None):
 # 管理界面
 @app.route('/manage')
 @login_required
-def manage(name=None):
+def manage():
     return render_template('manage.html')
 
 
 # 登录界面
 @app.route('/login', methods=('GET', 'POST'))
-def login(name=None):
+def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         # print(username, password)
-        error = None
+
         user = auth(username=username, password=password, status='username if have')
 
         if user is None:
@@ -109,19 +109,70 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/distribution', methods=['POST', 'GET'])
+@login_required
+def distribution():
+    if request.method == 'POST':
+        f = request.files['file']
+        basepath = os.getcwd()
+        upload_path = os.path.join(basepath, 'uploads', secure_filename(f.filename))
+        f.save(upload_path)
+        return redirect(url_for('distribution'))
+    return render_template('distribution.html')
+
+
 # 系统
 @app.route('/system', methods=['GET', 'POST'])
 @app.route('/system/<name>', methods=['GET', 'POST'])
 @login_required
 def system(name=None):
     if name == 'apartment':
-        results = system_apartment()
+        results = system_everything('apartment')
         if request.method == 'POST':
             apartment_name = request.form['apartment_name']
             apartment_dir = request.form['apartment_dir']
             floor = request.form['floor']
-            print(request.form)
             system_apartment_write(apartment_name=apartment_name, apartment_dir=apartment_dir, floor=floor)
+        return render_template('system.html', name=name, results=results)
+    if name == 'room':
+        ap_list = apartment_list()
+        results = system_everything('room')
+        if request.method == 'POST':
+            # room_id, student_count, face, orientation, floor_num, apartment_name
+            room_id = request.form['room_id']
+            student_count = request.form['student_count']
+            face = request.form['face']
+            orientation = request.form['orientation']
+            floor_num = request.form['floor_num']
+            apartment_name = request.form['apartment_name']
+            system_room_write(room_id=room_id, student_count=student_count, face=face, orientation=orientation, floor_num=floor_num, apartment_name=apartment_name)
+
+        return render_template('system.html', results=results, name=name, ap_list=ap_list)
+    if name == 'class':
+        results = system_everything('class')
+        de_list = department_list()
+        if request.method == 'POST':
+            class_num = request.form['class_num']
+            class_name = request.form['class_name']
+            profession = request.form['profession']
+            grade = request.form['grade']
+            department_name = request.form['department_name']
+            system_class_write(class_num=class_num,
+                               class_name=class_name,
+                               profession=profession,
+                               grade=grade,
+                               department_name=department_name
+                               )
+        return render_template('system.html', de_list=de_list, name=name, results=results)
+    if name == 'department':
+        results = system_everything('department')
+        if request.method == 'POST':
+            department_name = request.form['department_name']
+            department_leader = request.form['department_leader']
+            system_department_write(
+                department_name=department_name,
+                department_leader=department_leader
+            )
         return render_template('system.html', name=name, results=results)
     return render_template('system.html', name=name)
 
