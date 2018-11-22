@@ -48,3 +48,35 @@ def system_department_write(department_name, department_leader):
     cursor.execute('insert into department values (?,?,?)', data)
     conn.commit()
     conn.close()
+
+
+def system_apartment_delete(ID):
+    conn = sqlite3.connect('main.db')
+    cursor = conn.cursor()
+    cursor.execute('delete from apartment where apartment_id = ?;', (ID,))
+    conn.commit()
+    conn.close()
+
+
+def system_room_delete(ID):
+    conn = sqlite3.connect('main.db')
+    cursor = conn.cursor()
+    cursor.execute('delete from room where room_id = ?;', (ID,))
+    conn.commit()
+    conn.close()
+
+
+def system_class_delete(ID):
+    conn = sqlite3.connect('main.db')
+    cursor = conn.cursor()
+    cursor.execute('delete from class where class_num = ?;', (ID,))
+    conn.commit()
+    conn.close()
+
+
+def system_department_delete(ID):
+    conn = sqlite3.connect('main.db')
+    cursor = conn.cursor()
+    cursor.execute('delete from department where department_num = ?;', (ID,))
+    conn.commit()
+    conn.close()

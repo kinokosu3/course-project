@@ -23,8 +23,22 @@ def student_search(apartment_name, student_name, student_num):
     conn.close()
     return results
 
-def student_delete():
-    pass
+
+def student_delete(student_num):
+    conn = sqlite3.connect('main.db')
+    cursor = conn.cursor()
+    cursor.execute('delete from student where student_num = ?;', (student_num,))
+    conn.commit()
+    conn.close()
+
+
+def student_everything():
+    conn = sqlite3.connect('main.db')
+    cursor = conn.cursor()
+    everything = cursor.execute('select * from student').fetchall()
+    conn.commit()
+    conn.close()
+    return everything
 
 
 def department_list():

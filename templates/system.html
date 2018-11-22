@@ -39,6 +39,7 @@
                 <th>宿舍楼名</th>
                 <th>宿舍楼地址</th>
                 <th>楼层</th>
+                <th>操作</th>
             </tr>
             {% for result in results%}
             <tr>
@@ -46,6 +47,7 @@
                 <td>{{ result[1]}}</td>
                 <td>{{ result[2]}}</td>
                 <td>{{ result[3]}}</td>
+                <td><a href="/system/delete/apartment/{{result[0]}}" class="button">删除该条目</a></td>
             </tr>
             {% endfor %}
         </table>
@@ -85,6 +87,7 @@
                 <th>朝向</th>
                 <th>楼层数</th>
                 <th>公寓楼</th>
+                <th>操作</th>
             </tr>
             {% for result in results%}
             <tr>
@@ -95,6 +98,7 @@
                 <td>{{ result[4]}}</td>
                 <td>{{ result[5]}}</td>
                 <td>{{ result[6]}}</td>
+                <td><a href="/system/delete/room/{{result[0]}}" class="button">删除该条目</a></td>
             </tr>
             {% endfor %}
         </table>
@@ -114,8 +118,8 @@
                 <option>大三</option>
                 <option>大四</option>
             </select>
-            <label for="department">院系</label>
-                <select name="department">
+            <label for="department_name">院系</label>
+                <select name="department_name">
                     {% for i in de_list %}
                     <option>{{ i[0] }}</option>
                     {% endfor %}
@@ -131,6 +135,7 @@
                 <th>专业</th>
                 <th>年级</th>
                 <th>院系</th>
+                <th>操作</th>
             </tr>
             {% for result in results%}
             <tr>
@@ -139,6 +144,7 @@
                 <td>{{ result[2]}}</td>
                 <td>{{ result[3]}}</td>
                 <td>{{ result[4]}}</td>
+            <td><a href="/system/delete/class/{{result[0]}}" class="button">删除该条目</a></td>
             </tr>
             {% endfor %}
         </table>
@@ -157,12 +163,14 @@
                 <th>院系ID</th>
                 <th>院系名</th>
                 <th>系主任</th>
+                <th>操作</th>
             </tr>
             {% for result in results%}
             <tr>
                 <td>{{ result[0]}}</td>
                 <td>{{ result[1]}}</td>
                 <td>{{ result[2]}}</td>
+                <td><a href="/system/delete/department/{{result[0]}}" class="button">删除该条目</a></td>
             </tr>
             {% endfor %}
     {% endif %}

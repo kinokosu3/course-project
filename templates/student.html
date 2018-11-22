@@ -44,7 +44,6 @@
                     </select>
                 <input type="submit" value="写入">
             </p>
-
         </form>
     {% endif %}
     {% if name == 'condition-search' %}
@@ -87,10 +86,39 @@
                 <td>{{ result[4] }}</td>
                 <td>{{ result[5] }}</td>
                 <td>{{ result[6] }}</td>
-                <td><a href="/apartment/delete/{{result[0]}}" class="button">删除该条目</a></td>
+                <td><a href="/student/delete/{{result[0]}}" class="button">删除该条目</a></td>
             </tr>
             {% endfor %}
         </table>
+    {% endif %}
+    {% if name == 'everything' %}
+        </br>
+        <table>
+            <tr>
+                <th>宿舍楼</th>
+                <th>学号</th>
+                <th>名字</th>
+                <th>性别</th>
+                <th>入住时间</th>
+                <th>宿舍号</th>
+                <th>班别</th>
+                <th>院系</th>
+                <th>操作</th>
+            </tr>
+            {% for result in results%}
+            <tr>
+                <td>{{ result[-1] }}</td>
+                <td>{{ result[0] }}</td>
+                <td>{{ result[1] }}</td>
+                <td>{{ result[2] }}</td>
+                <td>{{ result[3] }}</td>
+                <td>{{ result[4] }}</td>
+                <td>{{ result[5] }}</td>
+                <td>{{ result[6] }}</td>
+                <td><a href="/student/delete/{{result[0]}}" class="button">删除该条目</a></td>
+            </tr>
+            {% endfor %}
+
     {% endif %}
 {% for message in get_flashed_messages() %}
             <div class="flash">{{ message }}</div>

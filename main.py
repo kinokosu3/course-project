@@ -6,8 +6,9 @@ from sqlfunction.SQLcargo import cargo_re
 from sqlfunction.exists import exists, apartment_list
 from sqlfunction.SQLvisit import write_visit, quit_list, write_quit
 from sqlfunction.SQLapartment import apartment_write, apartment_delete,apartment_search,apartment_everything
-from sqlfunction.SQLstudent import student_write, student_delete, student_search, department_list
-from sqlfunction.SQLsystem import system_everything, system_apartment_write, system_room_write,  system_class_write, system_department_write
+from sqlfunction.SQLstudent import student_write, student_delete, student_search, department_list, student_everything
+from sqlfunction.SQLsystem import system_everything, system_apartment_write, system_room_write,  system_class_write, system_department_write, system_apartment_delete, system_room_delete, system_class_delete, system_department_delete
+
 import hashlib, os
 import functools
 
@@ -177,6 +178,33 @@ def system(name=None):
     return render_template('system.html', name=name)
 
 
+@app.route('/system/delete/apartment/<name>')
+@login_required
+def sy_apartment_delete(name=None):
+    system_apartment_delete(ID=name)
+    return render_template('system.html', name=None)
+
+
+@app.route('/system/delete/room/<name>')
+@login_required
+def sy_room_delete(name=None):
+    system_room_delete(ID=name)
+    return render_template('system.html', name=None)
+
+
+@app.route('/system/delete/class/<name>')
+@login_required
+def sy_class_delete(name=None):
+    system_class_delete(ID=name)
+    return render_template('system.html', name=None)
+
+
+@app.route('/system/delete/department/<name>')
+@login_required
+def sy_department_delete(name=None):
+    system_department_delete(ID=name)
+    return render_template('system.html', name=None)
+
 @app.route('/student', methods=['GET', 'POST'])
 @app.route('/student/<name>', methods=['GET', 'POST'])
 @login_required
@@ -202,6 +230,7 @@ def student(name=None):
                 flash('班级出现错误')
             else:
                 student_write(student_num=student_num, name=student_name, gender=gender, stay_time=stay_time, room_id=room_id, class_num=class_num,department_name=department, apartment_name=apartment_name)
+                flash('写入OK')
         return render_template('student.html', name=name, de_list=de_list, ap_list=ap_list)
     if name == 'condition-search':
         results = None
@@ -216,7 +245,8 @@ def student(name=None):
                 flash('该公寓无该学生')
         return render_template('student.html', name=name, ap_list=ap_list, results=results)
     if name == 'everything':
-        pass
+        results = student_everything()
+        return render_template('student.html', results=results, name=name)
     return render_template('student.html', name=None)
 
 
@@ -224,7 +254,6 @@ def student(name=None):
 # @app.route('')
 #
 # def information_search():
-
 
 
 @app.route('/apartment', methods=['GET', 'POST'])
@@ -267,6 +296,15 @@ def apartment(name=None):
 def apartment_del(name=None):
     apartment_delete(name)
     return redirect('/apartment/condition-search')
+
+
+
+
+@app.route('/student/delete/<name>')
+@login_required
+def student_del(name=None):
+    student_delete(name)
+    return redirect('/student/everything')
 
 
 @app.route('/outin')
